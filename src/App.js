@@ -16,8 +16,20 @@ import { Tooltip } from "@chakra-ui/react";
 import { networkParams } from "./networks";
 import { connectors } from "./connectors";
 import { toHex, truncateAddress } from "./utils";
+import { ethers } from 'ethers';
+import contract from './abi.json';
+import logo from './img/logo.jpg';
+
+
+
+const contractAddress = "0xB838D92019595C5d59735d9acd4B17C91Bba3337";
+const abi = contract;
+
 
 export default function Home() {
+
+
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     library,
@@ -37,6 +49,7 @@ export default function Home() {
   const handleNetwork = (e) => {
     const id = e.target.value;
     setNetwork(Number(id));
+
   };
 
   const handleInput = (e) => {
@@ -73,9 +86,11 @@ export default function Home() {
       });
       setSignedMessage(message);
       setSignature(signature);
+
     } catch (error) {
       setError(error);
     }
+
   };
 
   const verifyMessage = async () => {
@@ -90,6 +105,41 @@ export default function Home() {
       setError(error);
     }
   };
+
+  const testaccount = () =>{
+    console.log("id:" + chainId);
+    console.log("account:" + account);
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const nftContract = new ethers.Contract(contractAddress, abi, signer);
+    console.log("contract address" + contractAddress);
+    console.log(abi);
+    console.log(provider);
+    console.log(signer);
+    console.log(nftContract)
+
+  }
+
+  const verify_contract_conn = async () =>{
+    const provider = new ethers.providers.Web3Provider(ethereum);
+       const signer = provider.getSigner();
+       const nftContract = new ethers.Contract(contractAddress, abi, signer);
+
+       console.log("Initialize payment");
+       let nftTxn = await nftContract.entry_check()
+       console.log("Matic...please wait");
+       await nftTxn.wait();
+
+       console.log("Transaction executed  ${nftTxn.hash}");
+
+  }
+
+
+
+
+
+
+
 
   const refreshState = () => {
     window.localStorage.setItem("provider", undefined);
@@ -110,11 +160,14 @@ export default function Home() {
   }, []);
 
   return (
+
+
     <>
-      <Text position="absolute" top={0} right="15px">
-        If you're in the sandbox, first "Open in New Window" ⬆️
-      </Text>
+
       <VStack justifyContent="center" alignItems="center" h="100vh">
+        <div>
+            <img src={logo} />
+        </div>
         <HStack marginBottom="10px">
           <Text
             margin="0"
@@ -122,7 +175,7 @@ export default function Home() {
             fontSize={["1.5em", "2em", "3em", "4em"]}
             fontWeight="600"
           >
-            Let's connect with
+            Let's verify from
           </Text>
           <Text
             margin="0"
@@ -135,9 +188,23 @@ export default function Home() {
               WebkitTextFillColor: "transparent"
             }}
           >
-            Web3-React
+            Wallecto
           </Text>
         </HStack>
+
+        <HStack>
+
+            <Button onClick={testaccount}>TEST ACCOUNT - ID - CONTRACT </Button>
+
+        </HStack>
+        <HStack>
+
+            <Button onClick={verify_contract_conn}>TEST CONTRACT </Button>
+
+        </HStack>
+
+
+
         <HStack>
           {!active ? (
             <Button onClick={onOpen}>Connect Wallet</Button>
@@ -145,6 +212,7 @@ export default function Home() {
             <Button onClick={disconnect}>Disconnect</Button>
           )}
         </HStack>
+
         <VStack justifyContent="center" alignItems="center" padding="10px 0">
           <HStack>
             <Text>{`Connection Status: `}</Text>
@@ -156,7 +224,7 @@ export default function Home() {
           </HStack>
 
           <Tooltip label={account} placement="right">
-            <Text>{`Account: ${truncateAddress(account)}`}</Text>
+            <Text>{`Account: ${(account)}`}</Text>
           </Tooltip>
           <Text>{`Network ID: ${chainId ? chainId : "No Network"}`}</Text>
         </VStack>
@@ -169,17 +237,20 @@ export default function Home() {
               overflow="hidden"
               padding="10px"
             >
+          <VStack>
+                ff
+
+          </VStack>
+            </Box>
+            <Box
+              maxW="sm"
+              borderWidth="1px"
+              borderRadius="lg"
+              overflow="hidden"
+              padding="10px"
+            >
               <VStack>
-                <Button onClick={switchNetwork} isDisabled={!network}>
-                  Switch Network
-                </Button>
-                <Select placeholder="Select network" onChange={handleNetwork}>
-                  <option value="3">Ropsten</option>
-                  <option value="4">Rinkeby</option>
-                  <option value="42">Kovan</option>
-                  <option value="1666600000">Harmony</option>
-                  <option value="42220">Celo</option>
-                </Select>
+                FF
               </VStack>
             </Box>
             <Box
@@ -190,53 +261,14 @@ export default function Home() {
               padding="10px"
             >
               <VStack>
-                <Button onClick={signMessage} isDisabled={!message}>
-                  Sign Message
-                </Button>
-                <Input
-                  placeholder="Set Message"
-                  maxLength={20}
-                  onChange={handleInput}
-                  w="140px"
-                />
-                {signature ? (
-                  <Tooltip label={signature} placement="bottom">
-                    <Text>{`Signature: ${truncateAddress(signature)}`}</Text>
-                  </Tooltip>
-                ) : null}
-              </VStack>
-            </Box>
-            <Box
-              maxW="sm"
-              borderWidth="1px"
-              borderRadius="lg"
-              overflow="hidden"
-              padding="10px"
-            >
-              <VStack>
-                <Button onClick={verifyMessage} isDisabled={!signature}>
-                  Verify Message
-                </Button>
-                {verified !== undefined ? (
-                  verified === true ? (
-                    <VStack>
-                      <CheckCircleIcon color="green" />
-                      <Text>Signature Verified!</Text>
-                    </VStack>
-                  ) : (
-                    <VStack>
-                      <WarningIcon color="red" />
-                      <Text>Signature Denied!</Text>
-                    </VStack>
-                  )
-                ) : null}
+              FF
               </VStack>
             </Box>
           </HStack>
         )}
         <Text>{error ? error.message : null}</Text>
-      </VStack>
-      <SelectWalletModal isOpen={isOpen} closeModal={onClose} />
+         </VStack>
+       <SelectWalletModal isOpen={isOpen} closeModal={onClose} />
     </>
   );
 }
