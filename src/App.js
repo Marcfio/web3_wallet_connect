@@ -19,7 +19,7 @@ import { toHex, truncateAddress } from "./utils";
 import { ethers } from 'ethers';
 import contract from './abi.json';
 import logo from './img/logo.jpg';
-
+import qrcode from './img/verifica.png';
 
 
 const contractAddress = "0xB838D92019595C5d59735d9acd4B17C91Bba3337";
@@ -27,8 +27,6 @@ const abi = contract;
 
 
 export default function Home() {
-
-
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -45,6 +43,8 @@ export default function Home() {
   const [message, setMessage] = useState("");
   const [signedMessage, setSignedMessage] = useState("");
   const [verified, setVerified] = useState();
+  const [passed, setTransaction] = useState(0);
+
 
   const handleNetwork = (e) => {
     const id = e.target.value;
@@ -116,29 +116,31 @@ export default function Home() {
     console.log(abi);
     console.log(provider);
     console.log(signer);
-    console.log(nftContract)
+    console.log(nftContract);
 
   }
 
   const verify_contract_conn = async () =>{
-    const provider = new ethers.providers.Web3Provider(ethereum);
-       const signer = provider.getSigner();
-       const nftContract = new ethers.Contract(contractAddress, abi, signer);
 
+       console.log(passed);
+
+       const provider = new ethers.providers.Web3Provider(ethereum);
+       const signer = provider.getSigner();
+       console.log(signer);
+       const nftContract = new ethers.Contract(contractAddress, abi, signer);
        console.log("Initialize payment");
-       let nftTxn = await nftContract.entry_check()
+       let nftTxn = await nftContract.entry_check();
        console.log("Matic...please wait");
        await nftTxn.wait();
-
        console.log("Transaction executed  ${nftTxn.hash}");
+       console.log(nftTxn.hash);
+       const hash = nftTxn.hash;
+
+       // setVerified(verify === account.toLowerCase());
+       setTransaction(1);
+       console.log(passed)
 
   }
-
-
-
-
-
-
 
 
   const refreshState = () => {
@@ -164,6 +166,7 @@ export default function Home() {
 
     <>
 
+
       <VStack justifyContent="center" alignItems="center" h="100vh">
         <div>
             <img src={logo} />
@@ -175,35 +178,25 @@ export default function Home() {
             fontSize={["1.5em", "2em", "3em", "4em"]}
             fontWeight="600"
           >
-            Let's verify from
+            Let's verify from Wallecto
           </Text>
-          <Text
-            margin="0"
-            lineHeight="1.15"
-            fontSize={["1.5em", "2em", "3em", "4em"]}
-            fontWeight="600"
-            sx={{
-              background: "linear-gradient(90deg, #1652f0 0%, #b9cbfb 70.35%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent"
-            }}
-          >
-            Wallecto
-          </Text>
+
+        </HStack>
+        <HStack>
+            <div>
+               <b>{passed ?
+
+                <img src={qrcode} /> :
+
+                 'The user is not authorized'}</b>
+            </div>
         </HStack>
 
         <HStack>
 
-            <Button onClick={testaccount}>TEST ACCOUNT - ID - CONTRACT </Button>
+            <Button onClick={verify_contract_conn}>VERIFICA</Button>
 
         </HStack>
-        <HStack>
-
-            <Button onClick={verify_contract_conn}>TEST CONTRACT </Button>
-
-        </HStack>
-
-
 
         <HStack>
           {!active ? (
@@ -269,6 +262,9 @@ export default function Home() {
         <Text>{error ? error.message : null}</Text>
          </VStack>
        <SelectWalletModal isOpen={isOpen} closeModal={onClose} />
+
     </>
+
+
   );
 }
