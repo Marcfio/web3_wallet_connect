@@ -48,7 +48,7 @@ export default function Home() {
   const [passed, setTransaction] = useState(0);
 
   const provider = new WalletConnectProvider({
-    infuraId: "f9118570e19b4e2aa80e3afd8da05d55", // Required
+    infuraId: "27e484dcd9e3efcfd25a83a78777cdf1", // Required
   });
 
 
@@ -116,7 +116,7 @@ export default function Home() {
     console.log("id:" + chainId);
     console.log("account:" + account);
     const provider = new WalletConnectProvider({
-      infuraId: "f9118570e19b4e2aa80e3afd8da05d55", // Required
+      infuraId: "27e484dcd9e3efcfd25a83a78777cdf1", // Required
     });
     //await provider.enable();
 
@@ -141,7 +141,7 @@ export default function Home() {
        console.log("id:" + chainId);
        console.log("account:" + account);
        const provider = new WalletConnectProvider({
-         infuraId: "f9118570e19b4e2aa80e3afd8da05d55", // Required
+         infuraId: "27e484dcd9e3efcfd25a83a78777cdf1", // Required
        });
        //await provider.enable();
 
