@@ -20,6 +20,8 @@ import { ethers } from 'ethers';
 import contract from './abi.json';
 import logo from './img/logo.jpg';
 import qrcode from './img/verifica.png';
+import { providers } from "ethers";
+import WalletConnectProvider from "@walletconnect/web3-provider";
 
 
 const contractAddress = "0xB838D92019595C5d59735d9acd4B17C91Bba3337";
@@ -44,6 +46,11 @@ export default function Home() {
   const [signedMessage, setSignedMessage] = useState("");
   const [verified, setVerified] = useState();
   const [passed, setTransaction] = useState(0);
+
+  const provider = new WalletConnectProvider({
+    infuraId: "f9118570e19b4e2aa80e3afd8da05d55", // Required
+  });
+
 
 
   const handleNetwork = (e) => {
@@ -86,7 +93,6 @@ export default function Home() {
       });
       setSignedMessage(message);
       setSignature(signature);
-
     } catch (error) {
       setError(error);
     }
@@ -109,12 +115,18 @@ export default function Home() {
   const testaccount = () =>{
     console.log("id:" + chainId);
     console.log("account:" + account);
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
+    const provider = new WalletConnectProvider({
+      infuraId: "f9118570e19b4e2aa80e3afd8da05d55", // Required
+    });
+    //await provider.enable();
+
+
+    const _provider = new providers.Web3Provider(provider);
+    const signer = _provider.getSigner();
     const nftContract = new ethers.Contract(contractAddress, abi, signer);
     console.log("contract address" + contractAddress);
     console.log(abi);
-    console.log(provider);
+    console.log(_provider);
     console.log(signer);
     console.log(nftContract);
 
@@ -124,6 +136,44 @@ export default function Home() {
 
        console.log(passed);
 
+
+
+       console.log("id:" + chainId);
+       console.log("account:" + account);
+       const provider = new WalletConnectProvider({
+         infuraId: "f9118570e19b4e2aa80e3afd8da05d55", // Required
+       });
+       //await provider.enable();
+
+
+       const _provider = new providers.Web3Provider(provider);
+
+       // const provider = new ethers.providers.Web3Provider(ethereum);
+       const signer = _provider.getSigner();
+       console.log(signer);
+       const nftContract = new ethers.Contract(contractAddress, abi, signer);
+       console.log("Initialize payment");
+       let nftTxn = await nftContract.entry_check();
+       console.log("Matic...please wait");
+       await nftTxn.wait();
+       console.log("Transaction executed  ${nftTxn.hash}");
+       console.log(nftTxn.hash);
+       const hash = nftTxn.hash;
+
+       // setVerified(verify === account.toLowerCase());
+       setTransaction(1);
+       console.log(passed)
+
+  }
+
+  const verify_contract_conn_desktop = async () =>{
+
+       console.log(passed);
+
+
+
+       console.log("id:" + chainId);
+       console.log("account:" + account);
        const provider = new ethers.providers.Web3Provider(ethereum);
        const signer = provider.getSigner();
        console.log(signer);
@@ -141,6 +191,7 @@ export default function Home() {
        console.log(passed)
 
   }
+
 
 
   const refreshState = () => {
@@ -194,9 +245,27 @@ export default function Home() {
 
         <HStack>
 
-            <Button onClick={verify_contract_conn}>VERIFICA</Button>
+            <Button onClick={testaccount}>DATI</Button>
 
         </HStack>
+
+
+
+
+
+        <HStack>
+
+            <Button onClick={verify_contract_conn}>VERIFICA MOBILE</Button>
+
+        </HStack>
+
+
+        <HStack>
+
+            <Button onClick={verify_contract_conn_desktop}>VERIFICA DESKTOP</Button>
+
+        </HStack>
+
 
         <HStack>
           {!active ? (
